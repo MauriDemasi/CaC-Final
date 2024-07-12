@@ -5,6 +5,7 @@ import com.example.cac_final.entity.Book;
 import com.example.cac_final.repository.BookRepository;
 import com.example.cac_final.services.BookService;
 
+import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,17 +42,25 @@ public class BookServiceImpl implements BookService {
         return bookRepository.save(book);
     }
 
-    @Override
+   @Override
     public Book updateBookById(long id, Book bookActualizado) {
-        Book bookExistente = bookRepository.findById(id).orElse(null);
-        if (bookExistente != null) {
-            bookExistente.setTitulo(bookActualizado.getTitulo());
-            bookExistente.setIsbn(bookActualizado.getIsbn());
-            bookExistente.setAutores(bookActualizado.getAutores());
-            bookExistente.setUpdated(new Date());
-            return bookRepository.save(bookExistente);
+        // Validar si bookActualizado no es null
+        if (bookActualizado == null) {
+            throw new IllegalArgumentException("El libro actualizado no puede ser nulo");
         }
-        return null;
+
+        // Buscar el libro existente por id
+        Book bookExistente = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Libro no encontrado con id: " + id));
+
+        // Actualizar los campos del libro existente
+        bookExistente.setTitulo(bookActualizado.getTitulo());
+        bookExistente.setIsbn(bookActualizado.getIsbn());
+        bookExistente.setAutores(bookActualizado.getAutores());
+        bookExistente.setUpdated(new Date());
+
+        // Guardar y devolver el libro actualizado
+        return bookRepository.save(bookExistente);
     }
 
   @Override
