@@ -8,6 +8,6 @@ public interface AutorService {
     Autor getAutorById(long id);
     Autor createAutor(Autor autor);
     Autor updateAutorById(long id, Autor autorActualizado);
-    Autor deleteAutorById(long id);
+    void deleteAutorById(long id);
 }
 

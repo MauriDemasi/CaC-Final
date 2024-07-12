@@ -1,7 +1,8 @@
 package com.example.cac_final.entity;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -17,13 +18,15 @@ public class Book {
     private String titulo;
     private String isbn;
 
+
     @ManyToMany
     @JoinTable(
         name = "autor_has_book",
         joinColumns = @JoinColumn(name = "book_id"),
         inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
-    private List<Autor> autores;
+    private List<Autor> autores = new ArrayList<>();
+
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_time", nullable = false, updatable = false)
@@ -34,7 +37,10 @@ public class Book {
     private Date updated;
 
     // Constructor, getters y setters
-    public Book() {}
+
+    public Book() {
+        this.autores = new ArrayList<>();
+    }
 
     public Long getId() {
         return id;
@@ -58,14 +64,6 @@ public class Book {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
-    }
-
-    public List<Autor> getAutores() {
-        return autores;
-    }
-
-    public void setAutores(List<Autor> autores) {
-        this.autores = autores;
     }
 
     public Date getCreated() {
@@ -95,4 +93,27 @@ public class Book {
     protected void onUpdate() {
         updated = new Date();
     }
+
+    public void removeAutor(Autor autor) {
+        this.autores.remove(autor);
+        autor.getBooks().remove(this);
+    }
+    
+      // Método para agregar un autor
+      public void addAutor(Autor autor) {
+        autores.add(autor);
+        if (!autor.getBooks().contains(this)) {
+            autor.getBooks().add(this);
+        }
+    }
+
+    public List<Autor> getAutores() {
+        return autores;
+    }
+
+    public void setAutores(List<Autor> autores) {
+        this.autores = autores;
+    }
+    
+    
 }

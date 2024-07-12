@@ -16,9 +16,11 @@ public class AutorHasBook {
     @ManyToOne
     @JoinColumn(name = "autor_id")
     private Autor autor;
-    
-    
 
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
+    
     public AutorHasBook() {
       
     }
@@ -54,6 +56,14 @@ public class AutorHasBook {
 
     public void setAutor(Autor autor) {
         this.autor = autor;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     
